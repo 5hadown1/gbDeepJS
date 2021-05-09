@@ -7,12 +7,44 @@ class ProductList {
 		this.container = container;
 		this._goods = []; // data
 		this._AllProducts = []; //Массив экземпляров товаров на основе this.goods;
+		this.cartGoods = [];
 
 		this._getGoods()
 			.then((data) => {
 					this._goods = data;
 					this._render();
 			});
+	}
+
+	onClick(event) {
+		let action = event.target.dataset.action;
+		let id = event.target.dataset.id;
+
+		if(action) {
+			this[action](id);
+		}
+	}
+
+	addToCart(id) {
+		this._goods.find((element) => {
+			if(element.id_product == id) {
+				const cartItemObj = new CartItem(element);
+				this.cartGoods.push(cartItemObj);
+				const cartBlock = document.querySelector('.cart');
+				cartBlock.insertAdjacentHTML('beforeend', cartItemObj.render())
+			}
+		});
+		console.log(this);
+	}
+
+	removeFromCart(id) {
+		const cartBlock = document.querySelector('.cart');
+		console.dir(cartBlock);
+		for (let cartItem of cartBlock.children) {
+			if(cartItem.dataset.id == id) {
+				cartItem.remove();
+			}
+		}
 	}
 
 	sum() {
@@ -27,6 +59,7 @@ class ProductList {
 
 	_render() {
 		const block = document.querySelector(this.container);
+		block.onclick = this.onClick.bind(this);
 
 		for (const product of this._goods) {
 			const productObject = new ProductItem(product);
@@ -52,7 +85,7 @@ class ProductItem {
 					<div class="desc">
 						<h3>${this.name}</h3>
 						<p>${this.price} \u20bd</p>
-						<button class="products__btnbuy" data-id="${this.id}">Купить</button>
+						<button class="products__btnbuy" data-id="${this.id}" data-action="addToCart">Купить</button>
 					</div>
 				</div>`;
 	}
@@ -61,45 +94,12 @@ class ProductItem {
 class CartList extends ProductList {
 	constructor(container = '.cart'){
 		super(container);
-		this._cartListItems = [];
-	}
-
-	addToCart(id) {
-		this._goods.find((element) => {
-			if(element.id_product == id) {
-				const cartItemObj = new CartItem(element);
-				this._cartListItems.push(cartItemObj);
-
-				const block = document.querySelector(this.container);
-				block.insertAdjacentHTML('beforeend', cartItemObj.render())
-			}
-		});
-	}
-
-	removeFromCart(id) {
-		this._cartListItems.find((element, index) => {
-			if(element.id == id) {
-				delete this._cartListItems[index];
-			}
-		});
+		this._render();
 	}
 
 	_render() {
-		const buyBtns = document.querySelectorAll('.products__btnbuy');
-		buyBtns.forEach(btn => 
-			btn.addEventListener('click', (event) => {
-				this.addToCart(event.target.dataset.id);
-			})
-		);
-
-		const removeBtns = document.querySelectorAll('.products__btnremove');
-		removeBtns.forEach(btn => 
-			btn.addEventListener('click', (event) => this.removeFromCart(event.target.dataset.id))
-		);
-
-		for (const product of this._cartListItems) {
-			block.insertAdjacentHTML('beforeend', product.render())
-		}
+		const cartBlock = document.querySelector(this.container);
+		cartBlock.onclick = this.onClick.bind(this);
 	}
 }
 
@@ -115,7 +115,7 @@ class CartItem extends ProductItem {
 						<h3>${this.name}</h3>
 						<p>${this.price} \u20bd</p>
 						</div>
-					<button class="products__btnremove" data-id="${this.id}">Удалить</button>
+					<button class="products__btnremove" data-id="${this.id}" data-action="removeFromCart">Удалить</button>
 				</div>`;
 	}
 }

@@ -34,7 +34,6 @@ class ProductList {
 				cartBlock.insertAdjacentHTML('beforeend', cartItemObj.render())
 			}
 		});
-		console.log(this);
 	}
 
 	removeFromCart(id) {

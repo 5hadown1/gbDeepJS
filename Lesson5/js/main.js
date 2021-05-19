@@ -5,7 +5,7 @@ const app = new Vue({
 	data: {
 		catalogUrl: '/catalogData.json',
 		products: [],
-		imgCatalog: 'https://placehold.it/200x150'
+		imgCatalog: 'https://via.placeholder.com/150'
 	},
 	methods: {
 		getJson(url) {
@@ -16,7 +16,20 @@ const app = new Vue({
 				})
 		},
 		addProduct(product) {
+			this.getJson(`${API}/addToBasket.json`)
+				.then(data => {
+					if (data.result === 1){
+						
+					} else {
+						alert('Error');
+					}
+			})
 			console.log(product.id_product);
+		},
+		_updateCart(product) {
+			let block = document.querySelector(`.cart-item[data-id="${product.id_product}"]`);
+			block.querySelector('.product-quantity').textContent = `Количество: ${product.quantity}`;
+			block.querySelector('.product-price').textContent = `${product.quantity * product.price} ₽`;
 		}
 	},
 	beforeCreate() {},

@@ -11,41 +11,34 @@
     <header>
         <div class="logo">Интернет-магазин</div>
         <div class="cart">
-            <form action="#" class="search-form">
-                <input type="text" class="search-field">
-                <button class="btn-search" type="submit">
+            <form action="#" class="search-form" @submit="filterGoods">
+				<input type="text" class="search-field" v-model="searchLine">
+                <button class="btn-search" type="submit" @click="filterGoods">
                     <i class="fas fa-search"></i>
                 </button>
             </form>
-            <button class="btn-cart" type="button">Корзина</button>
-            <div class="cart-block">
-                <div v-if="cartState">
-
-                </div>
-                <div v-else>
-                    Нет данных
-                </div>
-                <div class="cart-item" v-for="cartItem of cartItems" :key="product.id_product">
-                    <div class="product-bio">
-                        <img src="{{cartItem.img}}" alt="Some image">
-                        <div class="product-desc">
-                            <p class="product-title">{{cartItem.product_name}}</p>
-                            <p class="product-quantity">Количество: {{cartItem.quantity}}</p>
-                            <p class="product-single-price">{{cartItem.price}} за ед.</p>
-                        </div>
-                    </div>
-                    <div class="right-block">
-                        <p class="product-price">{{cartItem.price * cartItem.quantity}} ₽</p>
-                        <!-- <button class="del-btn" data-id="${this.id_product}">&times;</button> -->
-                    </div>
-                </div>
-
+            <button class="btn-cart" @click="isVisibleCart = !isVisibleCart" type="button">Корзина</button>
+            <div class="cart-block" :class="{invisible: isVisibleCart}">
+				<div class="cart-item" v-for="cartItem of cartItems" :key="cartItem.id_product" :data-id="cartItem.id_product">
+					<div class="product-bio">
+						<img :src="cartItem.img" alt="Some image">
+						<div class="product-desc">
+							<p class="product-title">{{cartItem.product_name}}</p>
+							<p class="product-quantity">Количество: {{cartItem.quantity}}</p>
+							<p class="product-single-price">{{cartItem.price}} за ед.</p>
+						</div>
+					</div>
+					<div class="right-block">
+						<p class="product-price">{{cartItem.price * cartItem.quantity}} ₽</p>
+						<button class="del-btn" @click="removeProduct(cartItem)">&times;</button>
+					</div>
+				</div>
             </div>
         </div>
     </header>
     <main>
         <div class="products">
-            <div class="product-item" v-for="product of products" :key="product.id_product">
+            <div class="product-item" v-for="product of products" :key="product.id_product" :data-id="product.id_product">
                 <img :src="imgCatalog" alt="Some img">
                 <div class="desc">
                     <h3>{{product.product_name}}</h3>

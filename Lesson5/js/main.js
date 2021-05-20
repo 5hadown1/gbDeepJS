@@ -5,7 +5,9 @@ const app = new Vue({
 	data: {
 		catalogUrl: '/catalogData.json',
 		products: [],
-		imgCatalog: 'https://via.placeholder.com/150'
+		cartItems: [],
+		imgCatalog: 'https://via.placeholder.com/150',
+		cartState: false
 	},
 	methods: {
 		getJson(url) {
@@ -19,17 +21,26 @@ const app = new Vue({
 			this.getJson(`${API}/addToBasket.json`)
 				.then(data => {
 					if (data.result === 1){
-						
+						let find = this.cartItems.find(element => element.id_product === product.id_product);
+						if(find) {
+							find.quantity++;
+						} else {
+							this.cartItems.push({
+								id_product: product.id_product,
+								img: this.imgCatalog,
+								product_name: product.product_name,
+								price: product.price,
+								quantity: 1},
+							);
+						}
 					} else {
 						alert('Error');
 					}
 			})
-			console.log(product.id_product);
+			console.log(this.cartItems);
 		},
 		_updateCart(product) {
-			let block = document.querySelector(`.cart-item[data-id="${product.id_product}"]`);
-			block.querySelector('.product-quantity').textContent = `Количество: ${product.quantity}`;
-			block.querySelector('.product-price').textContent = `${product.quantity * product.price} ₽`;
+
 		}
 	},
 	beforeCreate() {},

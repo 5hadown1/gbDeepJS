@@ -2,9 +2,6 @@ const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-a
 
 const app = new Vue({
     el: '#app',
-    data: {
-        userSearch: '',
-    },
     methods: {
         getJson(url){
             return fetch(url)
@@ -14,9 +11,6 @@ const app = new Vue({
                     this.$refs.errorcomponent.showError('Нет данных');
                 })
         },
-    },
-    mounted() {
-        console.log(this);
     }
 });
 

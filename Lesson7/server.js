@@ -53,6 +53,20 @@ app.post('/api/cart', (req, res) => {
 			const cart = JSON.parse(data);
 			// добавляем новый товар
 			cart.contents.push(req.body);
+			//Данные для stats.json
+			fs.readFile('./server/db/stats.json', (err, data) => {
+				if (err) {
+					console.log('Должен быть не пустой json файл');
+				} else {
+					let stats = JSON.parse(data);
+					let obj = {name: req.body.product_name, method: 'Added', time: new Date()};
+					stats.push(obj);
+					fs.writeFile('./server/db/stats.json', JSON.stringify(stats), (err) => {
+						if (err) throw err;
+						console.log('The file has been saved!');
+					});
+				}
+			});
 			// пишем обратно
 			fs.writeFile('./server/db/userCart.json', JSON.stringify(cart), (err) => {
 				if (err) {
@@ -60,7 +74,7 @@ app.post('/api/cart', (req, res) => {
 				} else {
 					res.send('{"result": 1}');
 				}
-			})
+			});
 		}
 	});
 });
@@ -87,7 +101,21 @@ app.put('/api/cart/:id', (req, res) => {
 				} else {
 					res.send('{"result": 1}');
 				}
-			})
+			});
+			//Данные для stats.json
+			fs.readFile('./server/db/stats.json', (err, data) => {
+				if (err) {
+					console.log('Должен быть не пустой json файл');
+				} else {
+					let stats = JSON.parse(data);
+					let obj = {name: find.product_name, method: 'Update', time: new Date()};
+					stats.push(obj);
+					fs.writeFile('./server/db/stats.json', JSON.stringify(stats), (err) => {
+						if (err) throw err;
+						console.log('The file has been saved!');
+					});
+				}
+			});
 		}
 	});
 });
@@ -112,7 +140,21 @@ app.delete('/api/cart/:id', (req, res) => {
 				} else {
 					res.send('{"result": 1}');
 				}
-			})
+			});
+			//Данные для stats.json
+			fs.readFile('./server/db/stats.json', (err, data) => {
+				if (err) {
+					console.log('Должен быть не пустой json файл');
+				} else {
+					let stats = JSON.parse(data);
+					let obj = {name: req.body.product_name, method: 'Delete', time: new Date()};
+					stats.push(obj);
+					fs.writeFile('./server/db/stats.json', JSON.stringify(stats), (err) => {
+						if (err) throw err;
+						console.log('The file has been saved!');
+					});
+				}
+			});
 		}
 	});
 });

@@ -4,7 +4,7 @@ Vue.component('cart', {
           imgCart: 'https://via.placeholder.com/50x100',
           cartUrl: '/getBasket.json',
           cartItems: [],
-          showCart: false,
+          showCart: false
       }
     },
     methods: {
